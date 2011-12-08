@@ -169,7 +169,7 @@ def _get_saved_stories(**kwargs):
     i = 0
     for story in stories:
         title = J(story).text()
-	    url = J('a', story).attr('href')
+        url = J('a', story).attr('href')
         # Skip digit-only <td>s and the 'More' link.
         if not re.match('\d+', title) and not re.match('\/x\?', url):
             # For HN links, make absolute URL.
@@ -180,8 +180,8 @@ def _get_saved_stories(**kwargs):
             kwargs['saved'].append({
                 'title': title,
                 'url': url,
-		        'date_posted': story_meta[i]['date_posted'],
-	        	'hn_url': story_meta[i]['hn_url'],
+                'date_posted': story_meta[i]['date_posted'], 
+                'hn_url': story_meta[i]['hn_url'],
             })
 	    i += 1
 
