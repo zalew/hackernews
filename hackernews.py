@@ -156,15 +156,22 @@ def _get_saved_stories(**kwargs):
     # Grab the stories.
     J = pq(kwargs['r'].content)
     stories = J('table table td.title')
-
+    stories_meta = J('table table td.subtext')
+    story_meta = []
+    for meta in stories_meta:
+    hn_url = J('a:last', meta).attr('href')
+	J('span, a', meta).remove()
+	days, unit = J(meta).text().replace('by', '').replace('|', '').replace('ago', '').strip().split()
+	if unit == 'hours':
+	    days = 0
+	date_posted = (datetime.datetime.now() + datetime.timedelta(days=-int(days))).strftime('%Y-%m-%d')
+	story_meta.append({'date_posted': date_posted, 'hn_url': hn_url})
+    i = 0
     for story in stories:
         title = J(story).text()
-
+	    url = J('a', story).attr('href')
         # Skip digit-only <td>s and the 'More' link.
-        if not re.match('\d+\.|More', title):
-
-            url = J('a', story).attr('href')
-
+        if not re.match('\d+', title) and not re.match('\/x\?', url):
             # For HN links, make absolute URL.
             if not url.startswith('http'):
                 url = 'https://news.ycombinator.com/' + url
@@ -173,7 +180,10 @@ def _get_saved_stories(**kwargs):
             kwargs['saved'].append({
                 'title': title,
                 'url': url,
+		        'date_posted': story_meta[i]['date_posted'],
+	        	'hn_url': story_meta[i]['hn_url'],
             })
+	    i += 1
 
     # If we're getting all saved stories.
     if kwargs['args'].all:
