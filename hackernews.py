@@ -162,7 +162,7 @@ def _get_saved_stories(**kwargs):
     hn_url = J('a:last', meta).attr('href')
 	J('span, a', meta).remove()
 	days, unit = J(meta).text().replace('by', '').replace('|', '').replace('ago', '').strip().split()
-	if unit == 'hours':
+	if unit != 'days':
 	    days = 0
 	date_posted = (datetime.datetime.now() + datetime.timedelta(days=-int(days))).strftime('%Y-%m-%d')
 	story_meta.append({'date_posted': date_posted, 'hn_url': hn_url})
